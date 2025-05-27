@@ -6,7 +6,9 @@ const swaggerDocument = YAML.load('./swagger.yaml');
 const app = express();
 const port = 3000;
 
+// Oops! Swagger UI is now exposed in all environments — even prod!
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
 
 app.get('/hello', (req, res) => {
   res.json({ message: 'Hello World' });
