@@ -100,7 +100,7 @@ app.get('/', (req, res) => {
     </tr>
 
     <tr>
-      <td><code>/swagger-ui.html</code><br/>(Swagger UI)</td>
+      <td><code>/api-docs/</code><br/>(Swagger UI)</td>
       <td>
         Full API blueprint &amp; “Try it out” buttons.<br/>
         Attackers enumerate endpoints → craft malicious calls.
