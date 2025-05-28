@@ -100,7 +100,7 @@ app.get('/', (req, res) => {
     </tr>
 
     <tr>
-      <td><code>/api-docs</code><br/>(Swagger UI)</td>
+      <td><code>/swagger-ui</code><br/>(Swagger UI)</td>
       <td>
         Full API blueprint &amp; “Try it out” buttons.<br/>
         Attackers enumerate endpoints → craft malicious calls.
@@ -202,3 +202,4 @@ app.use('/swagger-ui.html', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 // Start server
 app.listen(port, () => {
   console.log(`🚨 Misconfig API running at http://localhost:${port}`);
+});
