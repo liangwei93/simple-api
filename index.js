@@ -195,8 +195,10 @@ app.get('/', (req, res) => {
   `);
 });
 
+// Alias so scanners & bug-bounty tools detect it automatically
+app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use('/swagger-ui.html', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Start server
 app.listen(port, () => {
   console.log(`🚨 Misconfig API running at http://localhost:${port}`);
-});
