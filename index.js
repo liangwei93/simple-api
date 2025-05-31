@@ -89,7 +89,12 @@ app.get('/', (req, res) => {
   <p>
     <strong>Purpose:</strong> Show common <em>“dev-only tools left in Production”</em> so colleagues can
     see <em>risk → impact → fix</em> in a live environment.<br/>
-    <small>(CISO message: <em>This page is intentionally insecure – for education only.</em>)</small>
+    <small style="color:#888;"><em>
+  Created by Liangwei for internal demo and educational use only. <br/>
+  This app intentionally contains insecure patterns to showcase runtime misconfigurations. <br/>
+  <strong>Do not deploy in production environments.</strong>
+</em></small>
+
   </p>
 
   <table>
