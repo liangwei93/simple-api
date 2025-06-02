@@ -78,24 +78,114 @@ app.get('/hello', (req, res) => {
 // ───────────────────────────────────────────────────────────────
 app.get('/', (req, res) => {
   res.send(`
-    <h1>🔧 Security Misconfiguration Showcase</h1>
-    <ul>
-      <li>Swagger UI exposed at <a href="/api-docs">/api-docs</a></li>
-      <li>Swagger spec exposed at <a href="/swagger.json">/swagger.json</a></li>
-      <li>GraphQL Playground enabled at <a href="/graphql">/graphql</a></li>
-      <li>Spring Boot-like actuator at <a href="/actuator/env">/actuator/env</a></li>
-      <li>Unprotected Admin Panel at <a href="/admin">/admin</a></li>
-      <li>Verbose Error Route at <a href="/crash">/crash</a></li>
-      <li>Exposed Static Files at <a href="/files">/files</a></li>
-    </ul>
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>🔧 Security Misconfiguration Demo - Liangwei</title>
+      <style>
+        body {
+          font-family: Arial, sans-serif;
+          margin: 2rem auto;
+          max-width: 900px;
+          line-height: 1.6;
+        }
+        h1 {
+          color: #c0392b;
+        }
+        table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-top: 2rem;
+        }
+        th, td {
+          padding: 12px;
+          border: 1px solid #ddd;
+          text-align: left;
+        }
+        th {
+          background-color: #f44336;
+          color: white;
+        }
+        tr:nth-child(even) {
+          background-color: #f9f9f9;
+        }
+        .box {
+          background: #ffe5e5;
+          padding: 1rem;
+          border: 1px solid #c0392b;
+          margin-bottom: 2rem;
+        }
+        .footer {
+          margin-top: 3rem;
+          font-size: 0.9rem;
+          color: #888;
+        }
+      </style>
+    </head>
+    <body>
+      <h1>🔧 Security Misconfiguration Demo</h1>
 
-    <div style="background:#ffe5e5;padding:1rem;border:1px solid #c0392b;margin-bottom:2rem;">
-      <h3>⚠️ Simulated Production State</h3>
-      <p><strong>Last Modified By:</strong> ${productionDB.lastModifiedBy || '—'}</p>
-      <p><strong>Last Modified At:</strong> ${productionDB.lastModifiedAt || '—'}</p>
-    </div>
+      <div class="box">
+        <h3>⚠️ Simulated Production State</h3>
+        <p><strong>Last Modified By:</strong> ${productionDB.lastModifiedBy || '—'}</p>
+        <p><strong>Last Modified At:</strong> ${productionDB.lastModifiedAt || '—'}</p>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Issue</th>
+            <th>Risk</th>
+            <th>Fix</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Swagger UI enabled in prod</td>
+            <td>Exposes internal API; attackers may fuzz endpoints</td>
+            <td>Disable in prod via config (e.g., <code>springdoc.swagger-ui.enabled=false</code>)</td>
+          </tr>
+          <tr>
+            <td>GraphQL Playground enabled</td>
+            <td>Supports introspection; can leak sensitive data</td>
+            <td>Disable <code>graphiql</code> or introspection in prod</td>
+          </tr>
+          <tr>
+            <td>CORS: Allow All</td>
+            <td>Cross-origin requests can be made by malicious sites</td>
+            <td>Restrict to known frontend domains only</td>
+          </tr>
+          <tr>
+            <td>Unprotected Admin Route</td>
+            <td>Anyone can access internal admin panel</td>
+            <td>Enforce auth (token/session) and IP whitelisting</td>
+          </tr>
+          <tr>
+            <td>Verbose Error Messages</td>
+            <td>Stack traces can expose internal logic</td>
+            <td>Use custom error pages and log details internally</td>
+          </tr>
+          <tr>
+            <td>Static File Exposure</td>
+            <td>Internal files (e.g., logs, configs) can be browsed</td>
+            <td>Use `.gitignore`, block `/public` leaks, validate file paths</td>
+          </tr>
+          <tr>
+            <td>Actuator API in prod</td>
+            <td>Leaks env vars and app metadata</td>
+            <td>Block access or require auth for `/actuator/*`</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="footer">
+        Made by Liangwei for public demo purposes only. Simulated vulnerabilities — do not use in real prod apps.
+      </div>
+    </body>
+    </html>
   `);
 });
+
 
 
 // Alias so scanners & bug-bounty tools detect it automatically
