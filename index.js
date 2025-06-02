@@ -131,53 +131,53 @@ app.get('/', (req, res) => {
         <p><strong>Last Modified At:</strong> ${productionDB.lastModifiedAt || '—'}</p>
       </div>
 
-      <table>
-        <thead>
-          <tr>
-            <th>Issue</th>
-            <th>Risk</th>
-            <th>Fix</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Swagger UI enabled in prod</td>
-            <td>Exposes internal API; attackers may fuzz endpoints</td>
-            <td>Disable in prod via config (e.g., <code>springdoc.swagger-ui.enabled=false</code>)</td>
-          </tr>
-          <tr>
-            <td>GraphQL Playground enabled</td>
-            <td>Supports introspection; can leak sensitive data</td>
-            <td>Disable <code>graphiql</code> or introspection in prod</td>
-          </tr>
-          <tr>
-            <td>CORS: Allow All</td>
-            <td>Cross-origin requests can be made by malicious sites</td>
-            <td>Restrict to known frontend domains only</td>
-          </tr>
-          <tr>
-            <td>Unprotected Admin Route</td>
-            <td>Anyone can access internal admin panel</td>
-            <td>Enforce auth (token/session) and IP whitelisting</td>
-          </tr>
-          <tr>
-            <td>Verbose Error Messages</td>
-            <td>Stack traces can expose internal logic</td>
-            <td>Use custom error pages and log details internally</td>
-          </tr>
-          <tr>
-              <td>Static File Exposure</td>
-              <td>Internal files (e.g., logs, configs) can be browsed</td>
-              <td>
-              Use <code>.gitignore</code>, block <code>/public</code> leaks, validate file paths
-          </td>
-            </tr>
-            <td>Actuator API in prod</td>
-            <td>Leaks env vars and app metadata</td>
-            <td>Block access or require auth for <code>/actuator/*</code></td>
-          </tr>
-        </tbody>
-      </table>
+<table style="width:100%;border-collapse:collapse;margin-top:2rem;font-size:0.95rem;box-shadow:0 2px 8px rgba(0,0,0,0.1)">
+  <thead style="background:#c0392b;color:#fff">
+    <tr>
+      <th style="padding:12px">Endpoint</th>
+      <th style="padding:12px">Risk</th>
+      <th style="padding:12px">Fix</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style="background:#f9f9f9">
+      <td style="padding:10px"><code><a href="/api-docs" style="color:#e74c3c">/api-docs</a></code> <br><small>Swagger UI</small></td>
+      <td style="padding:10px">Unauthenticated users can enumerate &amp; invoke internal APIs.</td>
+      <td style="padding:10px">Disable Swagger in prod (e.g., <code>springdoc.swagger-ui.enabled=false</code>).</td>
+    </tr>
+    <tr>
+      <td style="padding:10px"><code><a href="/graphql" style="color:#e74c3c">/graphql</a></code> <br><small>GraphQL Playground</small></td>
+      <td style="padding:10px">Introspection leaks schema; brute-force queries possible.</td>
+      <td style="padding:10px">Disable <code>graphiql</code> &amp; introspection in prod; add auth/RBAC.</td>
+    </tr>
+    <tr style="background:#f9f9f9">
+      <td style="padding:10px"><code><a href="/actuator/env" style="color:#e74c3c">/actuator/env</a></code></td>
+      <td style="padding:10px">Leaks env vars &amp; secrets; some actuator routes have RCE CVEs.</td>
+      <td style="padding:10px">Restrict or remove actuator endpoints in prod; auth/IP whitelist.</td>
+    </tr>
+    <tr>
+      <td style="padding:10px"><code><a href="/admin" style="color:#e74c3c">/admin</a></code></td>
+      <td style="padding:10px">No auth—anyone gets privileged access.</td>
+      <td style="padding:10px">Add token/session auth &amp; IP filtering.</td>
+    </tr>
+    <tr style="background:#f9f9f9">
+      <td style="padding:10px"><code>*</code> (CORS allow-all)</td>
+      <td style="padding:10px">Malicious origins can call your APIs (CSRF-style abuse).</td>
+      <td style="padding:10px">Whitelist trusted domains in CORS config.</td>
+    </tr>
+    <tr>
+      <td style="padding:10px"><code><a href="/crash" style="color:#e74c3c">/crash</a></code></td>
+      <td style="padding:10px">Stack trace reveals internal logic &amp; file paths.</td>
+      <td style="padding:10px">Return generic errors to clients; log details internally.</td>
+    </tr>
+    <tr style="background:#f9f9f9">
+      <td style="padding:10px"><code><a href="/files" style="color:#e74c3c">/files</a></code></td>
+      <td style="padding:10px">Directory listing exposes secrets/logs/configs.</td>
+      <td style="padding:10px">Disable auto-indexing, serve only vetted assets.</td>
+    </tr>
+  </tbody>
+</table>
+
 
       <div class="footer">
         Made by Liangwei for public demo purposes only. Simulated vulnerabilities — do not use in real prod apps.
