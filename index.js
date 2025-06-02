@@ -173,7 +173,7 @@ app.get('/', (req, res) => {
           <tr>
             <td>Actuator API in prod</td>
             <td>Leaks env vars and app metadata</td>
-            <td>Block access or require auth for `/actuator/*`</td>
+            <td>Block access or require auth for <code>/actuator/*</code></td>
           </tr>
         </tbody>
       </table>
