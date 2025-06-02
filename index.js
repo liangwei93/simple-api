@@ -10,6 +10,13 @@ const cors = require('cors');
 const app = express();
 const port = process.env.PORT || 3000;
 
+
+// 🔧 Simulated "Database"
+let productionDB = {
+  lastModifiedBy: null,
+  lastModifiedAt: null
+};
+
 // 🔧 CORS Misconfiguration — allow all
 app.use(cors({ origin: '*' }));
 
@@ -71,138 +78,37 @@ app.get('/hello', (req, res) => {
 // ───────────────────────────────────────────────────────────────
 app.get('/', (req, res) => {
   res.send(`
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8"/>
-<title>Insecure API Demo – Security Misconfigs</title>
-<style>
-  body{font-family:Arial,Helvetica,sans-serif;padding:2rem;} h1{color:#c0392b;}
-  table{width:100%;border-collapse:collapse;margin-top:1rem;}
-  th,td{border:1px solid #ddd;padding:.6rem;vertical-align:top;}
-  th{background:#f4f4f4;text-align:left;}
-  code{background:#f1f1f1;border-radius:4px;padding:2px 4px;}
-</style>
-</head>
-<body>
-  <h1>🔥 Insecure API Demo – Runtime Misconfigurations</h1>
-  <p>
-    <strong>Purpose:</strong> Show common <em>“dev-only tools left in Production”</em> so colleagues can
-    see <em>risk → impact → fix</em> in a live environment.<br/>
-    <small style="color:#888;"><em>
-  Created by Liangwei for internal demo and educational use only. <br/>
-  This app intentionally contains insecure patterns to showcase runtime misconfigurations. <br/>
-  <strong>Do not deploy in production environments.</strong>
-</em></small>
+    <h1>🔧 Security Misconfiguration Showcase</h1>
+    <ul>
+      <li>Swagger UI exposed at <a href="/api-docs">/api-docs</a></li>
+      <li>Swagger spec exposed at <a href="/swagger.json">/swagger.json</a></li>
+      <li>GraphQL Playground enabled at <a href="/graphql">/graphql</a></li>
+      <li>Spring Boot-like actuator at <a href="/actuator/env">/actuator/env</a></li>
+      <li>Unprotected Admin Panel at <a href="/admin">/admin</a></li>
+      <li>Verbose Error Route at <a href="/crash">/crash</a></li>
+      <li>Exposed Static Files at <a href="/files">/files</a></li>
+    </ul>
 
-  </p>
-
-  <table>
-    <tr>
-      <th>🔧 Endpoint</th>
-      <th>What’s Wrong / Risk</th>
-      <th>How to Fix in Prod</th>
-    </tr>
-
-    <tr>
-      <td><code>/api-docs/</code><br/>(Swagger UI)</td>
-      <td>
-        Full API blueprint &amp; “Try it out” buttons.<br/>
-        Attackers enumerate endpoints → craft malicious calls.
-      </td>
-      <td>
-        Disable UI in <code>NODE_ENV=production</code><br/>
-        or behind VPN / AuthN.<br/>
-        Keep spec in repo, not public.
-      </td>
-    </tr>
-
-    <tr>
-      <td><code>/swagger.json</code></td>
-      <td>
-        Raw OpenAPI spec leaked.<br/>
-        Blueprint for automated fuzzing.
-      </td>
-      <td>
-        Remove route or protect with auth; serve spec only from internal repo.
-      </td>
-    </tr>
-
-    <tr>
-      <td><code>/graphql</code><br/>(Playground + introspection)</td>
-      <td>
-        Enumerate entire schema, run queries, dump data.
-      </td>
-      <td>
-        Set <code>graphiql:false</code>, disable introspection in prod, enforce RBAC.
-      </td>
-    </tr>
-
-    <tr>
-      <td><code>/actuator/env</code></td>
-      <td>
-        Leaks env vars (DB passwords, tokens).<br/>
-        Some actuator routes have RCE CVEs.
-      </td>
-      <td>
-        Expose only health checks.<br/>
-        Gate with auth / IP allow-list; upgrade Spring Boot &amp; Cloud.
-      </td>
-    </tr>
-
-    <tr>
-      <td><code>/admin</code></td>
-      <td>
-        Unauthenticated “admin” panel → privilege escalation.
-      </td>
-      <td>
-        Add auth middleware, move to separate service, or delete dev stub.
-      </td>
-    </tr>
-
-    <tr>
-      <td><code>/crash</code></td>
-      <td>
-        Returns full stack trace → aids targeted exploits, info-leak.
-      </td>
-      <td>
-        Generic error handler; hide stack traces in prod logs only.
-      </td>
-    </tr>
-
-    <tr>
-      <td><code>/files/*</code></td>
-      <td>
-        Directory listing + downloadable secrets (e.g., <code>secret.txt</code>).
-      </td>
-      <td>
-        Disable auto-indexing; store artifacts in private bucket or behind auth.
-      </td>
-    </tr>
-
-    <tr>
-      <td>Wildcard CORS<br/>(<code>*</code>)</td>
-      <td>
-        Any site’s JS can hit your API → CSRF / token theft.
-      </td>
-      <td>
-        Pin allowed origins, use pre-flight checks, add CSRF tokens where needed.
-      </td>
-    </tr>
-  </table>
-
-  <p style="margin-top:2rem;">
-    <strong>Demo Tip:</strong> Open browser dev-tools → Network tab, call each endpoint, then run
-    a scanner (e.g., <code>nuclei</code>) to illustrate runtime detection.
-  </p>
-</body>
-</html>
+    <div style="background:#ffe5e5;padding:1rem;border:1px solid #c0392b;margin-bottom:2rem;">
+      <h3>⚠️ Simulated Production State</h3>
+      <p><strong>Last Modified By:</strong> ${productionDB.lastModifiedBy || '—'}</p>
+      <p><strong>Last Modified At:</strong> ${productionDB.lastModifiedAt || '—'}</p>
+    </div>
   `);
 });
+
 
 // Alias so scanners & bug-bounty tools detect it automatically
 app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use('/swagger-ui.html', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+app.post('/api/update-config', express.json(), (req, res) => {
+  const user = req.body.user || 'anonymous';
+  productionDB.lastModifiedBy = user;
+  productionDB.lastModifiedAt = new Date().toISOString();
+  res.json({ message: '⚠️ Production config updated!', productionDB });
+});
+
 
 // Start server
 app.listen(port, () => {

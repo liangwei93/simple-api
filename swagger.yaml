@@ -3,17 +3,19 @@ info:
   title: Simple API
   version: 1.0.0
 paths:
-  /hello:
-    get:
-      summary: Returns a greeting
+  /api/update-config:
+    post:
+      summary: Simulates a config change in production
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: string
       responses:
         '200':
-          description: A successful response
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
+          description: Simulated config update
 
