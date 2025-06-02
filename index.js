@@ -166,11 +166,12 @@ app.get('/', (req, res) => {
             <td>Use custom error pages and log details internally</td>
           </tr>
           <tr>
-            <td>Static File Exposure</td>
-            <td>Internal files (e.g., logs, configs) can be browsed</td>
-            <td>Use `.gitignore`, block `/public` leaks, validate file paths</td>
-          </tr>
-          <tr>
+              <td>Static File Exposure</td>
+              <td>Internal files (e.g., logs, configs) can be browsed</td>
+              <td>
+              Use <code>.gitignore</code>, block <code>/public</code> leaks, validate file paths
+          </td>
+            </tr>
             <td>Actuator API in prod</td>
             <td>Leaks env vars and app metadata</td>
             <td>Block access or require auth for <code>/actuator/*</code></td>
